@@ -1,4 +1,5 @@
 import discord
+import json
 from discord.ext import commands, tasks
 import os
 
@@ -7,6 +8,17 @@ CHANNEL_ID = 1394737075613335582  # Replace with your actual channel ID
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+def current_tags():
+    start = (week_index * 3) % len(challenges)
+    return [extract_tag(c) for c in challenges[start:start+3]]
+
+def extract_tag(challenge_text):
+    lines = challenge_text.split('\n')
+    for line in lines:
+        if '🧪 Tag:' in line:
+            return line.split(':')[1].strip()
+    return None
 
 challenges = [
     # Week 1
@@ -70,15 +82,55 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-def current_tags():
-    start = (week_index * 3) % len(challenges)
-    return [extract_tag(c) for c in challenges[start:start+3]]
+XP_FILE = "user_xp.json"
 
-def extract_tag(challenge_text):
-    lines = challenge_text.split('\n')
-    for line in lines:
-        if '🧪 Tag:' in line:
-            return line.split(':')[1].strip()
-    return None
+def load_xp():
+    if os.path.exists(XP_FILE):
+        with open(XP_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_xp(data):
+    with open(XP_FILE, "w") as f:
+        json.dump(data, f)
+
+async def award_xp(user, tag):
+    xp_data = load_xp()
+    user_id = str(user.id)
+    if user_id not in xp_data:
+        xp_data[user_id] = 0
+
+    xp_data[user_id] += 10  # XP per challenge
+    save_xp(xp_data)
+
+    try:
+        await user.send(f"✅ Great job completing `{tag}` challenge! You've earned 10 XP.")
+    except:
+        pass
+
+CHALLENGE_UPLOAD_CHANNEL_ID = YOUR_CHANNEL_ID  # Replace with actual uploads channel ID
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    if message.channel.id == CHALLENGE_UPLOAD_CHANNEL_ID:
+        content = message.content.lower()
+
+        for tag in current_tags():
+            if tag.lower() in content:
+                await award_xp(message.author, tag)
+                await message.add_reaction("✅")
+                break
+
+    await bot.process_commands(message)
+
+@bot.command()
+async def xp(ctx):
+    xp_data = load_xp()
+    user_id = str(ctx.author.id)
+    xp = xp_data.get(user_id, 0)
+    await ctx.send(f"🌟 {ctx.author.display_name}, you have `{xp}` XP.")
 
 bot.run(TOKEN)
