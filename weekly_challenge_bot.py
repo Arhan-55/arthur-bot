@@ -3,8 +3,8 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 
-TOKEN = "YOUR_BOT_TOKEN_HERE"
-CHANNEL_ID = YOUR_CHANNEL_ID_HERE  # Replace with your actual channel ID
+TOKEN = "MTM5NDk0MjA2MDQ2MDc2OTQwMQ.G6DPFa.4dveGg-f-LT7H4AwsrG73HPH7aJBDUrDprb2_U"
+CHANNEL_ID = 1394737075613335582  # Replace with your actual channel ID
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
