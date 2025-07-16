@@ -108,7 +108,7 @@ async def award_xp(user, tag):
     except:
         pass
 
-CHALLENGE_UPLOAD_CHANNEL_ID = YOUR_CHANNEL_ID  # Replace with actual uploads channel ID
+CHALLENGE_UPLOAD_CHANNEL_ID = 1395051462425444434  # Replace with actual uploads channel ID
 
 @bot.event
 async def on_message(message):
