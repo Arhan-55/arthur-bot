@@ -1,7 +1,6 @@
-
 import discord
-from discord.ext import commands, tasks
-import asyncio
+from discord.ext import commands
+import os
 
 TOKEN = "MTM5NDk0MjA2MDQ2MDc2OTQwMQ.G6DPFa.4dveGg-f-LT7H4AwsrG73HPH7aJBDUrDprb2_U"
 CHANNEL_ID = 1394737075613335582  # Replace with your actual channel ID
