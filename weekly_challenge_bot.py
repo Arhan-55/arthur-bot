@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import os
 
-TOKEN = os.getenv("MTM5NDk0MjA2MDQ2MDc2OTQwMQ.GrJZ0E.BtS48GrH6YBXS_q3kopDjuTtSp2Mo-ZMOgSado")  # Secure token usage
+TOKEN = os.getenv("TOKEN")  # Secure token usage
 CHANNEL_ID = 1394737075613335582  # Replace with your actual channel ID
 
 intents = discord.Intents.default()
