@@ -50,7 +50,35 @@ async def post_challenges():
             color=0x00ffae
         )
         await channel.send(embed=embed)
-    
+
+
     week_index += 1
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    if message.channel.id == CHALLENGE_UPLOAD_CHANNEL_ID:
+        content = message.content.lower()
+
+        for tag in current_tags():  # ← we'll define this in a sec
+            if tag.lower() in content:
+                await award_xp(message.author, tag)
+                await message.add_reaction("✅")
+                break
+
+    await bot.process_commands(message)
+
+def current_tags():
+    start = (week_index * 3) % len(challenges)
+    return [extract_tag(c) for c in challenges[start:start+3]]
+
+def extract_tag(challenge_text):
+    lines = challenge_text.split('\n')
+    for line in lines:
+        if '🧪 Tag:' in line:
+            return line.split(':')[1].strip()
+    return None
 
 bot.run(TOKEN)
